@@ -54,6 +54,53 @@ const addNewTask = async (req, res) => {
   }
 };
 
+// const getAssignedTask = async (req, res) => {
+//   const { status, priority, createdAt } = req.query
+
+//   // const filter = { mentions: req.user?.userId };
+//   const filter = {};
+
+//   if (status) {
+//     filter.status = status; // add status filter if provided
+//   }
+//   if (priority) {
+//     filter.priority = priority; // add priority filter if provided
+//   }
+//   if (createdAt) {
+//     filter.createdAt = createdAt; // add createdAt filter if provided
+//   }
+
+//   try {
+//     const allTask = await Todo.find(filter);
+//  const assignedTask = allTask.filter((task)=>task.mentions.includes(req.user?.userId))
+
+// console.log('assignedTask',assignedTask)
+
+//     res.json({ assignedTask });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+
+const getAssignedTask = async (req, res) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+    // Find tasks where mentions array contains the userId
+    const tasks = await Todo.find({ mentions: userId });
+
+    console.log(tasks)
+
+    res.status(200).json({ tasks });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const getTask = async (req, res) => {
   const { status, priority, createdAt } = req.query
 
@@ -155,4 +202,4 @@ const addNoteToTask = async (req, res) => {
   }
 };
 
-module.exports = { addNewTask, getTask, updateTask, removeTask, addNoteToTask };
+module.exports = { addNewTask, getTask, updateTask, removeTask, addNoteToTask,getAssignedTask };

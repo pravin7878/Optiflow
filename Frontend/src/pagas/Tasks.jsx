@@ -20,10 +20,13 @@ const Tasks = () => {
   const { allUsers } = useSelector((state) => state.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+console.log("tasks from task ja",tasks);
+
+
   useEffect(() => {
     dispatch(fetchTasks());
     // dispatch(fetchAllUsers());
-  }, []);
+  }, [dispatch]);
 
  
 

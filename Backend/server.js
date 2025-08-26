@@ -21,6 +21,7 @@ const io = new Server(httpServer,{
   },
 })
 
+app.set("socketio",io)
 
 const port = process.env.PORT || 3000
 
@@ -38,7 +39,7 @@ app.use("/team" , teamRouter)
 // Register socket events
 registerSocketEvents(io);
 
-app.listen(port , async()=>{
+httpServer.listen(port , async()=>{
 console.log(`server is runing on http://localhost:${port}`);
 try {
     await connectToDB()

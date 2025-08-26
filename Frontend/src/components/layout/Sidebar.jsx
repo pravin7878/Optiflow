@@ -1,5 +1,5 @@
 import { Box, Flex, HStack, Icon, IconButton, Image, Text, VStack } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdAddTask, MdOutlineDashboardCustomize } from 'react-icons/md';
@@ -7,18 +7,36 @@ import { AiOutlineTeam } from 'react-icons/ai';
 import { TbBrandGoogleAnalytics } from 'react-icons/tb';
 import { useColorMode } from '../ui/color-mode';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Sidebar = () => {
-const {colorMode} = useColorMode()
-// console.log(colorMode);
+    const { colorMode } = useColorMode()
+    const { user } = useSelector(state => state.user)
+    const [navItems, setNavItems] = useState([])
 
+    // const navItems = [
+    //     { label: 'Dashboard', icon: <MdOutlineDashboardCustomize />, path: "/" },
+    //     { label: 'Teams', icon: <AiOutlineTeam />, path: "/team" },
+    //     { label: 'All Tasks', icon: <MdAddTask />, path: "/tasks" },
+    //     { label: 'Assigned Tasks', icon: <MdAddTask />, path: "/tasks/assigned" },
+    // ]
 
-    const navItems = [
-        { label: 'Dashboard', icon: <MdOutlineDashboardCustomize /> , path : "/" },
-        { label: 'Teams', icon: <AiOutlineTeam /> , path : "/team"},
-        { label: 'All Tasks', icon: <MdAddTask /> ,path : "/tasks" },
-    ]
-
+    useEffect(() => {
+        if (user?.role === "teammember") {
+            setNavItems([
+                { label: 'Dashboard', icon: <MdOutlineDashboardCustomize />, path: "/" },
+                { label: 'All Tasks', icon: <MdAddTask />, path: "/tasks" },
+                { label: 'Assigned Tasks', icon: <MdAddTask />, path: "/tasks/assigned" },
+            ])
+        }
+        else {
+            setNavItems([
+                { label: 'Dashboard', icon: <MdOutlineDashboardCustomize />, path: "/" },
+                { label: 'Teams', icon: <AiOutlineTeam />, path: "/team" },
+                { label: 'All Tasks', icon: <MdAddTask />, path: "/tasks" }
+            ])
+        }
+    }, [user])
 
     return (
         <Box
@@ -28,7 +46,7 @@ const {colorMode} = useColorMode()
             py={3}
             display="flex"
             flexDirection="column"
-            justifyContent="space-between" 
+            justifyContent="space-between"
         >
             <Box>
                 <Flex
@@ -40,7 +58,7 @@ const {colorMode} = useColorMode()
                 >
                     <Box >
                         <Icon>
-                        <MdAddTask size={30}/>
+                            <MdAddTask size={30} />
                         </Icon>
                     </Box>
                     <Text>Task Managment</Text>
@@ -49,16 +67,16 @@ const {colorMode} = useColorMode()
                 <VStack align={"start"} px={[5]}>
                     {navItems?.map((item, ind) => {
                         return <Link key={ind} to={item.path}>
-                        <HStack
-                            w={"full"}
-                            cursor={"pointer"}
-                            _hover={{ bg: colorMode === "dark" ? "gray.700" : "gray.300" }}
-                            px={4}
-                            rounded={"sm"}
-                        >
-                            <Icon>{item?.icon}</Icon>
-                            <Text>{item?.label}</Text>
-                        </HStack>
+                            <HStack
+                                w={"full"}
+                                cursor={"pointer"}
+                                _hover={{ bg: colorMode === "dark" ? "gray.700" : "gray.300" }}
+                                px={4}
+                                rounded={"sm"}
+                            >
+                                <Icon>{item?.icon}</Icon>
+                                <Text>{item?.label}</Text>
+                            </HStack>
                         </Link>
                     })}
                 </VStack>
@@ -71,9 +89,9 @@ const {colorMode} = useColorMode()
                     size="xl"
                     p={0}
                     m={0}
-                   
+
                 >
-                    <IoSettingsOutline size={30}/>
+                    <IoSettingsOutline size={30} />
                 </IconButton>
             </HStack>
         </Box>

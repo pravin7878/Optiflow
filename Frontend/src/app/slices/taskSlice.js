@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchTasks, addTask, updateTask, deleteTask } from '../actions/task';
+import { fetchTasks, addTask, updateTask, deleteTask, getAssignedTasks } from '../actions/task';
 import { toaster } from '../../components/ui/toaster';
 
 const taskSlice = createSlice({
@@ -25,6 +25,21 @@ const taskSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+// Fetch assgned tasks
+      .addCase(getAssignedTasks.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAssignedTasks.fulfilled, (state, action) => {
+        state.loading = false;
+        state.tasks = action.payload;
+      })
+      .addCase(getAssignedTasks.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
       // Add task
       .addCase(addTask.pending, (state) => {
         state.loading = true;

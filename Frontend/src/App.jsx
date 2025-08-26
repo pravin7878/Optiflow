@@ -14,10 +14,16 @@ import { Teams } from './pagas/Teams';
 import AddMemberForm from './components/team/AddMemberForm';
 import { MemberDetailPage } from './components/team/MemberDetailPage';
 import { useSelector } from 'react-redux';
+import { useSocketNotifications } from './uttils/useSocketNotifications';
+import { AssignedTask } from './pagas/AssignedTask';
+
 
 function App() {
   const { user } = useSelector(state => state.user)
   console.log(user)
+
+  useSocketNotifications();
+
   return (
     <>
       <Toaster />
@@ -36,18 +42,27 @@ function App() {
             <Route path='/tasks/add' element={<PrivateRoute>
               <AddNewTask />
             </PrivateRoute>} />
-           
-           
-            <Route path='/team' element={<PrivateRoute>
-              <Teams />
-            </PrivateRoute>} />
+
+
             <Route path='/team/:memberId' element={<PrivateRoute>
               <MemberDetailPage />
             </PrivateRoute>} />
             <Route path='/team/add' element={<PrivateRoute>
               <AddMemberForm />
             </PrivateRoute>} />
-         
+
+            {/* user spesific route */}
+            {user.role === "teammember" ?
+              <Route path='/tasks/assigned' element={<PrivateRoute>
+                <AssignedTask />
+              </PrivateRoute>} />
+              :
+
+              <Route path='/team' element={<PrivateRoute>
+                <Teams />
+              </PrivateRoute>} />
+            }
+
             <Route path='/singin' element={<Login />} />
             <Route path='/singup' element={<Register />} />
           </Routes>

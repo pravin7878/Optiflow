@@ -4,7 +4,8 @@ const {
   getTask,
   updateTask,
   removeTask,
-  addNoteToTask
+  addNoteToTask,
+  getAssignedTask
 } = require("../controlers/todo");
 const { auth } = require("../middelware/auth");
 const { chackAccess } = require("../middelware/chackAccess");
@@ -16,6 +17,10 @@ todoRouter.post("/" ,auth, addNewTask)
 
 // get authenticated user Task 
 todoRouter.get("/" ,auth,chackAccess("Admin"), getTask)
+
+// get mansned user Task 
+todoRouter.get("/assigned" ,auth,chackAccess("teammember"), getAssignedTask)
+
 
 
 // edit a task

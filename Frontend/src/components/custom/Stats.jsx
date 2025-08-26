@@ -99,6 +99,7 @@ const Stats = () => {
     <SimpleGrid columns={{ base: "2", md: "3", lg: "4" }} gap={5}>
       {statsData?.map((stat, idx) => (
         <Flex
+        key={idx}
           direction={{ base: "column", sm: "row", md: "column" }}
           justify={{ sm: "space-between" }}
           align={"center"}
@@ -118,7 +119,7 @@ const Stats = () => {
           <HStack>
             {
               stat.badge.map((ele,ind)=>(
- <Tooltip content={ele?.text}>
+ <Tooltip key={ind}  content={ele?.text}>
               <Badge colorPalette={ind === 0 ? "green" : "red"} >{ele?.value}</Badge>
             </Tooltip>
               ))

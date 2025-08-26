@@ -28,6 +28,19 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (_, { rejec
   }
 });
 
+// get assigned tasks
+export const getAssignedTasks = createAsyncThunk('tasks/fetch/assigned', async (_, { rejectWithValue }) => {
+  try {
+    const token = getToken();
+    const response = await api.get(`/tasks/assigned`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data.tasks;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+});
+
 // Add a new task
 export const addTask = createAsyncThunk('tasks/addTask', async (taskData, { rejectWithValue }) => {
   try {

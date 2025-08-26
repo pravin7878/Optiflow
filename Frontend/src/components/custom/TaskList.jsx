@@ -5,10 +5,10 @@ import NoTasks from './NoTasks';
 import { useDispatch } from "react-redux";
 import { deleteTask, updateTask } from "../../app/actions/task";
 
-const TaskList = ({ tasks}) => {
+const TaskList = ({ tasks = []}) => {
 const dispatch = useDispatch()
 
-  if (!tasks.length) {
+  if (!tasks?.length) {
     return <NoTasks/>
   }
 
@@ -29,7 +29,7 @@ const handleSave = async (updatedTask) => {
   return (
     <Container maxW="4xl" py={6}>
       <VStack spacing={4} align="stretch">
-        {tasks.map((task) => (
+        {tasks?.map((task) => (
           <TaskCard
             key={task._id}
             task={task}
