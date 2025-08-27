@@ -20,12 +20,11 @@ const io = new Server(httpServer,{
     methods: ["GET", "POST"],
   },
 })
-
+app.use(cors("*"));
 app.set("socketio",io)
 
 const port = process.env.PORT || 3000
 
-app.use(cors());
 
 app.get("/" , (req,res)=>{
     res.send("wellcome to server")

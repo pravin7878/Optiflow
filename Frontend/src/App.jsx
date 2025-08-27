@@ -19,7 +19,7 @@ import { AssignedTask } from './pagas/AssignedTask';
 
 
 function App() {
-  const { user } = useSelector(state => state.user)
+  const { user } = useSelector(state => state?.user)
   console.log(user)
 
   useSocketNotifications();
@@ -52,7 +52,7 @@ function App() {
             </PrivateRoute>} />
 
             {/* user spesific route */}
-            {user.role === "teammember" ?
+            {user?.role === "teammember" ?
               <Route path='/tasks/assigned' element={<PrivateRoute>
                 <AssignedTask />
               </PrivateRoute>} />
