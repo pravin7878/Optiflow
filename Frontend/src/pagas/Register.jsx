@@ -47,7 +47,7 @@ const Register = () => {
     setValidationError("");
     const result = await dispatch(registerUser(data));
     console.log(result);
-    if (result.payload?.newUser) {
+    if (result.payload?.NewMember) {
       setData({
         email: "",
         password: "",
