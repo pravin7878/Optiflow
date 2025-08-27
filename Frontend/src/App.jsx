@@ -16,6 +16,8 @@ import { MemberDetailPage } from './components/team/MemberDetailPage';
 import { useSelector } from 'react-redux';
 import { useSocketNotifications } from './uttils/useSocketNotifications';
 import { AssignedTask } from './pagas/AssignedTask';
+import Leave from './pagas/Leave';
+import Analitics from './pagas/Analitics';
 
 
 function App() {
@@ -44,23 +46,33 @@ function App() {
             </PrivateRoute>} />
 
 
-            <Route path='/team/:memberId' element={<PrivateRoute>
-              <MemberDetailPage />
-            </PrivateRoute>} />
+
             <Route path='/team/add' element={<PrivateRoute>
               <AddMemberForm />
             </PrivateRoute>} />
 
             {/* user spesific route */}
             {user?.role === "teammember" ?
-              <Route path='/tasks/assigned' element={<PrivateRoute>
-                <AssignedTask />
-              </PrivateRoute>} />
+              <>
+                <Route path='/tasks/assigned' element={<PrivateRoute>
+                  <AssignedTask />
+                </PrivateRoute>} />
+
+              </>
+
               :
 
-              <Route path='/team' element={<PrivateRoute>
-                <Teams />
-              </PrivateRoute>} />
+              <>
+                <Route path='/team' element={<PrivateRoute>
+                  <Teams />
+                </PrivateRoute>} />
+                <Route path='/team/:memberId' element={<PrivateRoute>
+                  <MemberDetailPage />
+                </PrivateRoute>} />
+
+                <Route path='/leave' element={<Leave/>}/>
+                <Route path='/analytics' element={<Analitics/>}/>
+              </>
             }
 
             <Route path='/singin' element={<Login />} />

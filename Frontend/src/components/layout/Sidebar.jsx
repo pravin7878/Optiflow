@@ -8,6 +8,8 @@ import { TbBrandGoogleAnalytics } from 'react-icons/tb';
 import { useColorMode } from '../ui/color-mode';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { FcLeave } from 'react-icons/fc';
+import { GrAnalytics } from 'react-icons/gr';
 
 const Sidebar = () => {
     const { colorMode } = useColorMode()
@@ -33,7 +35,9 @@ const Sidebar = () => {
             setNavItems([
                 { label: 'Dashboard', icon: <MdOutlineDashboardCustomize />, path: "/" },
                 { label: 'Teams', icon: <AiOutlineTeam />, path: "/team" },
-                { label: 'All Tasks', icon: <MdAddTask />, path: "/tasks" }
+                { label: 'All Tasks', icon: <MdAddTask />, path: "/tasks" },
+                { label: 'Leave', icon: <FcLeave />, path: "/leave" },
+                { label: 'Analytics', icon: <GrAnalytics />, path: "/analytics" },
             ])
         }
     }, [user])
