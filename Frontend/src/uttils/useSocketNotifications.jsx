@@ -3,6 +3,8 @@ import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import { toaster } from "../components/ui/toaster";
 
+const BACKEND_URI = import.meta.env.VITE_BACKEND_URI;
+
 
 export function useSocketNotifications() {
   const { user } = useSelector(state => state.user);
@@ -10,7 +12,7 @@ export function useSocketNotifications() {
   useEffect(() => {
     if (!user?.userId) return;
 
-    const socket = io("http://localhost:8080/");
+    const socket = io(BACKEND_URI);
     socket.emit("join", user.userId);
 
     socket.on("taskAssigned", (data) => {
