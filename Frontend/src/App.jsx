@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from './components/layout/Layout'
 import Dashboard from './pagas/Dashboard'
 import { Container } from '@chakra-ui/react'
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import Login from './pagas/Login';
 import Register from './pagas/Register';
 import PrivateRoute from './components/custom/PrivateRoute';
@@ -19,66 +19,48 @@ import { AssignedTask } from './pagas/AssignedTask';
 import Leave from './pagas/Leave';
 import Analitics from './pagas/Analitics';
 
-
 function App() {
   const { user } = useSelector(state => state?.user)
-  console.log(user)
-
+  const location = useLocation();
   useSocketNotifications();
+
+  // paths where we DON'T want Layout (login, register)
+  const hideLayout = ["/signin", "/signup"].includes(location.pathname);
 
   return (
     <>
       <Toaster />
-      <Container>
-        <Layout>
-          <Toaster />
+      <Container maxW="100%" p={0}>
+        {hideLayout ? (
+          // 🔹 Direct auth pages without Layout
           <Routes>
-            <Route path='/' element={<PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>} />
-            <Route path='/tasks' element={
-              <PrivateRoute>
-                <Tasks />
-              </PrivateRoute>
-            } />
-            <Route path='/tasks/add' element={<PrivateRoute>
-              <AddNewTask />
-            </PrivateRoute>} />
-
-
-
-            <Route path='/team/add' element={<PrivateRoute>
-              <AddMemberForm />
-            </PrivateRoute>} />
-
-            {/* user spesific route */}
-            {user?.role === "teammember" ?
-              <>
-                <Route path='/tasks/assigned' element={<PrivateRoute>
-                  <AssignedTask />
-                </PrivateRoute>} />
-
-              </>
-
-              :
-
-              <>
-                <Route path='/team' element={<PrivateRoute>
-                  <Teams />
-                </PrivateRoute>} />
-                <Route path='/team/:memberId' element={<PrivateRoute>
-                  <MemberDetailPage />
-                </PrivateRoute>} />
-
-                <Route path='/leave' element={<Leave/>}/>
-                <Route path='/analytics' element={<Analitics/>}/>
-              </>
-            }
-
-            <Route path='/singin' element={<Login />} />
-            <Route path='/singup' element={<Register />} />
+            <Route path='/signin' element={<Login />} />
+            <Route path='/signup' element={<Register />} />
           </Routes>
-        </Layout>
+        ) : (
+          // 🔹 Protected area with Layout
+          <Layout>
+            <Routes>
+              <Route path='/' element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+              <Route path='/tasks' element={<PrivateRoute><Tasks /></PrivateRoute>} />
+              <Route path='/tasks/add' element={<PrivateRoute><AddNewTask /></PrivateRoute>} />
+
+              <Route path='/team/add' element={<PrivateRoute><AddMemberForm /></PrivateRoute>} />
+
+              {/* user specific route */}
+              {user?.role === "teammember" ? (
+                <Route path='/tasks/assigned' element={<PrivateRoute><AssignedTask /></PrivateRoute>} />
+              ) : (
+                <>
+                  <Route path='/team' element={<PrivateRoute><Teams /></PrivateRoute>} />
+                  <Route path='/team/:memberId' element={<PrivateRoute><MemberDetailPage /></PrivateRoute>} />
+                  <Route path='/leave' element={<Leave />} />
+                  <Route path='/analytics' element={<Analitics />} />
+                </>
+              )}
+            </Routes>
+          </Layout>
+        )}
       </Container>
     </>
   )

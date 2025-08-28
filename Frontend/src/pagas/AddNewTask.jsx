@@ -22,7 +22,7 @@ const AddNewTask = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.tasks);
-  const { allUsers } = useSelector((state) => state.user);
+  const { allUsers,user } = useSelector((state) => state.user);
   const [errors, setErrors] = useState({});
   const [mentions, setMentions] = useState([]);
   const [taskData, setTaskData] = useState({
@@ -35,6 +35,7 @@ const AddNewTask = () => {
   console.log(useSelector((state) => state.tasks))
   console.log("allUsers", allUsers);
 
+console.log(user);
 
 
   // Validate form fields

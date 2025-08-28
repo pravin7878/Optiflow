@@ -12,9 +12,9 @@ api.interceptors.response.use(
       // Remove user from localStorage
       localStorage.removeItem('user');
       // Dispatch logout to Redux
-    //   store.dispatch(logout());
+      // store.dispatch(logout());
       // Redirect to login
-      window.location.href = '/singin';
+      window.location.href = '/signin';
       toaster.create({
         description: error.response.message || "Session expired,Please login again.",
         type: "error",

@@ -17,34 +17,13 @@ import TaskList from '../components/custom/TaskList';
 const Tasks = () => {
   const dispatch = useDispatch();
   const { tasks, loading, error } = useSelector((state) => state.tasks);
-  const { allUsers } = useSelector((state) => state.user);
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
 console.log("tasks from task ja",tasks);
 
 
   useEffect(() => {
     dispatch(fetchTasks());
-    // dispatch(fetchAllUsers());
   }, [dispatch]);
-
- 
-
-  const toggleStatus = async (taskId, task) => {
-    const updatedTask = { ...task, status: task?.status === "pending" ? "completed" : "pending" }
-    const result = await dispatch(updateTask({ taskId, taskData: updatedTask }));
-    if (result.meta.requestStatus === "fulfilled") {
-      console.log("Task updated successfully");
-    }
-  };
-
-  
-  const handleDelete = async (taskId) => {
-    const result = await dispatch(deleteTask(taskId));
-    if (result.meta.requestStatus === "fulfilled") {
-      console.log("Task deleted successfully");
-    }
-  };
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text color="red.500">{error}</Text>;
@@ -71,80 +50,6 @@ console.log("tasks from task ja",tasks);
 
         <TaskList tasks={tasks} 
         />
-
-
-        {/* {tasks?.length === 0 ?
-          <NoTasks />
-          :
-          <SimpleGrid py={5} columns={{ base: 1, sm: 2, md: 3 }} gap={5}>
-            {tasks.map((task) => (
-              <VStack key={task._id} border="1px solid #ccc" p={4} borderRadius="md" w="100%">
-                <Text fontWeight="bold">{task.title}</Text>
-                <Text>{task.description}</Text>
-                {task.tags && task.tags.length > 0 && (
-                  <HStack wrap="wrap" spacing={1} mb={2}>
-                    {task.tags.map((tag, idx) => (
-                      <Text key={idx} fontSize="xs" color="gray.500" bg="gray.100" px={2} py={0.5} borderRadius="md">
-                        #{tag}
-                      </Text>
-                    ))}
-                  </HStack>
-                )}
-                {task.mentions && task.mentions.length > 0 && (
-                  <HStack wrap="wrap" spacing={1} mb={2}>
-                    {task.mentions.map((userId, idx) => {
-                      const user = allUsers.find(u => u._id === (userId._id || userId));
-                      return user ? (
-                        <Text key={user._id} fontSize="xs" color="blue.500" bg="blue.50" px={2} py={0.5} borderRadius="md">
-                          @{user.name}
-                        </Text>
-                      ) : null;
-                    })}
-                  </HStack>
-                )}
-                <HStack>
-                  <NotesModal
-                    notes={task.notes || []}
-                    onAddNote={async (noteText) => {
-                      await dispatch(addNoteToTask({ taskId: task._id, text: noteText }));
-                      dispatch(fetchTasks());
-                    }}
-                  >
-                    <IconButton
-                      variant="ghost"
-                      size="sm"
-                      aria-label="Notes"
-                    >
-                      <FaRegStickyNote />
-                    </IconButton>
-                  </NotesModal>
-
-                  <IconButton variant={"ghost"} size="sm" onClick={() => handleEdit(task)}>
-                    <Checkbox.Root onChange={() => toggleStatus(task._id, task)} checked={task?.status === "completed"}>
-                      <Checkbox.HiddenInput />
-                      <Checkbox.Control />
-                    </Checkbox.Root>
-                  </IconButton>
-
-                  <EditTaskModal
-                    task={task}
-                    isOpen={isOpen}
-                    onClose={onClose}
-                    onSave={handleSave}
-                  >
-                    <IconButton variant={"ghost"} size="sm" onClick={() => handleEdit(task)}>
-                      <FaEdit />
-                    </IconButton>
-                  </EditTaskModal>
-
-                  <IconButton variant={"ghost"} size="sm" onClick={() => handleDelete(task._id)}>
-                    <AiFillDelete />
-                  </IconButton>
-                </HStack>
-              </VStack>
-            ))}
-          </SimpleGrid>
-        } */}
       </VStack>
 
 

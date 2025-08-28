@@ -1,40 +1,39 @@
-import { registerUser } from "../app/actions/user"
+import { registerUser } from "../app/actions/user";
 import {
   Button,
-  Center,
   Field,
   Fieldset,
-  For,
   HStack,
   Input,
-  NativeSelect,
   Stack,
-  Text
-} from "@chakra-ui/react"
-import React, { useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { Link, useNavigate } from "react-router-dom"
+  Text,
+  Box,
+  Flex,
+} from "@chakra-ui/react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, loading, error } = useSelector((state) => state.user);
-
+  const { loading, error } = useSelector((state) => state.user);
 
   const [data, setData] = useState({
     name: "",
     email: "",
-    password: ""
-  })
+    password: "",
+  });
   const [validationError, setValidationError] = useState("");
-  // console.log(data);
 
   const handelChange = (e) => {
-    const { name, value } = e.target
-    setData({ ...data, [name]: value })
-  }
+    const { name, value } = e.target;
+    setData({ ...data, [name]: value });
+  };
 
-  const handelSubmit = async () => {
+  const handelSubmit = async (e) => {
+    e.preventDefault();
+
     // Frontend validation
     if (!data.name || !data.email || !data.password) {
       setValidationError("All fields are required.");
@@ -45,61 +44,121 @@ const Register = () => {
       return;
     }
     setValidationError("");
+
     const result = await dispatch(registerUser(data));
-    console.log(result);
     if (result.payload?.NewMember) {
       setData({
+        name: "",
         email: "",
         password: "",
       });
-      navigate("/singin");
+      navigate("/signin");
     }
-  }
+  };
+
   return (
-    <Center py={5}>
-      <Fieldset.Root size="lg" maxW="md">
-        
-        <Stack>
-          <Fieldset.Legend>Register Now</Fieldset.Legend>
-          <Fieldset.HelperText>
-            Please provide your details below.
-          </Fieldset.HelperText>
+    <Flex
+      minH="100vh"
+      align="center"
+      justify="center"
+      bgGradient="linear(to-r, gray.800, gray.900)"
+      px={4}
+    >
+      <Box
+        w="full"
+        maxW="md"
+        bg="white"
+        _dark={{ bg: "gray.800" }}
+        rounded="2xl"
+        shadow="lg"
+        p={8}
+      >
+        <Stack spacing={4}>
+          <Stack textAlign="center">
+            <Text fontSize="2xl" fontWeight="bold">
+              Register Now
+            </Text>
+            <Text color="gray.500" _dark={{ color: "gray.400" }}>
+              Please provide your details below.
+            </Text>
+          </Stack>
+
+          {error && (
+            <Text fontSize="sm" color="red.500">
+              {error?.errors?.[0] || error?.message}
+            </Text>
+          )}
+          {validationError && (
+            <Text fontSize="sm" color="red.500">
+              {validationError}
+            </Text>
+          )}
+
+          <Fieldset.Root size="lg" as="form" onSubmit={handelSubmit}>
+            <Fieldset.Content>
+              <Field.Root>
+                <Field.Label>Name</Field.Label>
+                <Input
+                  value={data.name}
+                  onChange={handelChange}
+                  name="name"
+                  placeholder="Enter your name"
+                />
+              </Field.Root>
+
+              <Field.Root>
+                <Field.Label>Email address</Field.Label>
+                <Input
+                  value={data.email}
+                  onChange={handelChange}
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                />
+              </Field.Root>
+
+              <Field.Root>
+                <Field.Label>Password</Field.Label>
+                <Input
+                  value={data.password}
+                  onChange={handelChange}
+                  name="password"
+                  type="password"
+                  placeholder="Enter your password"
+                />
+              </Field.Root>
+            </Fieldset.Content>
+
+            <Button
+              type="button"
+              colorScheme="blue"
+              w="full"
+              mt={4}
+              onClick={handelSubmit}
+              loading={loading}
+            >
+              Sign Up
+            </Button>
+          </Fieldset.Root>
+
+          <HStack justify="center">
+            <Text fontSize="sm" color="gray.500">
+              Already have an account?
+            </Text>
+            <Text
+              as={Link}
+              to="/signin"
+              fontSize="sm"
+              color="blue.500"
+              _hover={{ textDecoration: "underline" }}
+            >
+              Sign In
+            </Text>
+          </HStack>
         </Stack>
-        {error && <Text size={"sm"} color="red.500">{error?.errors?.[0] || error?.massage}</Text>}
-        {validationError && <Text size={"sm"} color="red.500">{validationError}</Text>}
-        
-        <Fieldset.Content >
-          <Field.Root>
-            <Field.Label>Name</Field.Label>
-            <Input value={data.name} onChange={handelChange} name="name" />
-          </Field.Root>
+      </Box>
+    </Flex>
+  );
+};
 
-          <Field.Root>
-            <Field.Label>Email address</Field.Label>
-            <Input value={data.email} onChange={handelChange} name="email" type="email" />
-          </Field.Root>
-
-          <Field.Root>
-            <Field.Label>Password</Field.Label>
-            <Input value={data.password} onChange={handelChange} name="password" type="text" />
-          </Field.Root>
-        </Fieldset.Content>
-
-        <Button onClick={handelSubmit} type="submit" alignSelf="flex-start"
-          loading={loading}
-        >
-          SingUp
-        </Button>
-        <HStack>
-          <Fieldset.HelperText>
-            If you already have a account , you can
-          </Fieldset.HelperText>
-          <Text _hover={{ textDecoration: "underline" }}><Link to={"/singin"}>SingIn</Link></Text>
-        </HStack>
-
-      </Fieldset.Root>
-    </Center>
-  )
-}
-
-export default Register
+export default Register;
