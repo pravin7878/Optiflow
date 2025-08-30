@@ -18,6 +18,7 @@ import { useSocketNotifications } from './uttils/useSocketNotifications';
 import { AssignedTask } from './pagas/AssignedTask';
 import Leave from './pagas/Leave';
 import Analitics from './pagas/Analitics';
+import NotFound from './pagas/NotFound';
 
 function App() {
   const { user } = useSelector(state => state?.user)
@@ -35,7 +36,7 @@ function App() {
           // 🔹 Direct auth pages without Layout
           <Routes>
             <Route path='/signin' element={<Login />} />
-            <Route path='/signup' element={<Register />} />
+            {/* <Route path='/signup' element={<Register />} /> */}
           </Routes>
         ) : (
           // 🔹 Protected area with Layout
@@ -45,7 +46,7 @@ function App() {
               <Route path='/tasks' element={<PrivateRoute><Tasks /></PrivateRoute>} />
               <Route path='/tasks/add' element={<PrivateRoute><AddNewTask /></PrivateRoute>} />
 
-              <Route path='/team/add' element={<PrivateRoute><AddMemberForm /></PrivateRoute>} />
+
 
               {/* user specific route */}
               {user?.role === "teammember" ? (
@@ -56,8 +57,12 @@ function App() {
                   <Route path='/team/:memberId' element={<PrivateRoute><MemberDetailPage /></PrivateRoute>} />
                   <Route path='/leave' element={<Leave />} />
                   <Route path='/analytics' element={<Analitics />} />
+                  <Route path='/team/add' element={<PrivateRoute><AddMemberForm /></PrivateRoute>} />
                 </>
               )}
+
+              <Route path="*" element={<NotFound />} />
+
             </Routes>
           </Layout>
         )}

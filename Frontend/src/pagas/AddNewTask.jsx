@@ -17,32 +17,34 @@ import { fetchAllUsers } from "../app/actions/user";
 import { Link, useNavigate } from "react-router-dom";
 import MentionsInputChakra from '../components/custom/MentionsInputChakra';
 import { AiOutlineArrowLeft } from "react-icons/ai";
+import { roles } from "@/uttils/constents";
 
 const AddNewTask = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.tasks);
-  const { allUsers,user } = useSelector((state) => state.user);
+  const { allUsers, user } = useSelector((state) => state.user);
   const [errors, setErrors] = useState({});
   const [mentions, setMentions] = useState([]);
   const [taskData, setTaskData] = useState({
     title: "",
     priority: "low",
     description: "",
-    tags: ""
+    tags: "",
+    deadline: ""
   });
 
   console.log(useSelector((state) => state.tasks))
   console.log("allUsers", allUsers);
 
-console.log(user);
+  console.log(user);
 
 
   // Validate form fields
   const validate = () => {
     const newErrors = {};
     if (!taskData.title.trim()) newErrors.title = "Title is required";
-    if (!taskData.description.trim()) newErrors.description = "Description is required";
+    if (!taskData.deadline) newErrors.deadline = "Deadline is required";
     return newErrors;
   };
 
@@ -147,6 +149,17 @@ console.log(user);
         </Field.Root>
 
         <Field.Root>
+          <Field.Label>Deadline</Field.Label>
+          <Input
+            type="datetime-local"
+            name="deadline"
+            value={taskData.deadline}
+            onChange={handleChange}
+            min={new Date().toISOString().slice(0, 16)}
+          />
+        </Field.Root>
+
+        <Field.Root>
           <Field.Label>Tags (comma separated)</Field.Label>
           <Input
             name="tags"
@@ -156,16 +169,19 @@ console.log(user);
           />
         </Field.Root>
 
-        <Field.Root>
-          <Field.Label>Enter UserName to Mentions</Field.Label>
-          <MentionsInputChakra
-            users={allUsers}
-            value={mentions}
-            onChange={handleMentionsChange}
-            placeholder="Type @ to mention users"
-          />
-        </Field.Root>
-
+        {user?.role !== roles.TeamMember ?
+          <Field.Root>
+            <Field.Label>Enter UserName to Mentions</Field.Label>
+            <MentionsInputChakra
+              users={allUsers}
+              value={mentions}
+              onChange={handleMentionsChange}
+              placeholder="Type @ to mention users"
+            />
+          </Field.Root>
+          :
+          null
+        }
 
         <Button
           type="submit"

@@ -8,21 +8,21 @@ const api = axios.create({
 api.interceptors.response.use(
   response => response,
   error => {
-    if (error.response && error.response.status === 401) {
-      // Remove user from localStorage
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      window.location.pathname !== "/signin"
+    ) {
       localStorage.removeItem('user');
-      // Dispatch logout to Redux
-      // store.dispatch(logout());
-      // Redirect to login
       window.location.href = '/signin';
       toaster.create({
         description: error.response.message || "Session expired,Please login again.",
         type: "error",
         placement: "top-end",
-      })
+      });
     }
     return Promise.reject(error);
   }
 );
 
-export default api; 
+export default api;

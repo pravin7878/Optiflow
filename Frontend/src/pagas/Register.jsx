@@ -19,6 +19,7 @@ const Register = () => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.user);
 
+
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -85,7 +86,7 @@ const Register = () => {
 
           {error && (
             <Text fontSize="sm" color="red.500">
-              {error?.errors?.[0] || error?.message}
+              {error?.errors?.[0] || error?.massage}
             </Text>
           )}
           {validationError && (

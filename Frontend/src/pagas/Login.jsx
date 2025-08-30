@@ -123,7 +123,7 @@ const Login = () => {
               Sign In
             </Button>
           </Fieldset.Root>
-
+{/* 
           <HStack justify="center">
             <Text fontSize="sm" color="gray.500">
               Don’t have an account?
@@ -137,7 +137,7 @@ const Login = () => {
             >
               Sign Up
             </Text>
-          </HStack>
+          </HStack> */}
         </Stack>
       </Box>
     </Flex>

@@ -41,6 +41,10 @@ const todoSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     }],
+    deadline : {
+      type : String,
+      require : true,
+    }
   },
   { versionKey: false , timestamps : true}
 );

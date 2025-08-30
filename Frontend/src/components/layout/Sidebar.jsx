@@ -16,18 +16,13 @@ const Sidebar = () => {
     const { user } = useSelector(state => state.user)
     const [navItems, setNavItems] = useState([])
 
-    // const navItems = [
-    //     { label: 'Dashboard', icon: <MdOutlineDashboardCustomize />, path: "/" },
-    //     { label: 'Teams', icon: <AiOutlineTeam />, path: "/team" },
-    //     { label: 'All Tasks', icon: <MdAddTask />, path: "/tasks" },
-    //     { label: 'Assigned Tasks', icon: <MdAddTask />, path: "/tasks/assigned" },
-    // ]
+   
 
     useEffect(() => {
         if (user?.role === "teammember") {
             setNavItems([
                 { label: 'Dashboard', icon: <MdOutlineDashboardCustomize />, path: "/" },
-                { label: 'All Tasks', icon: <MdAddTask />, path: "/tasks" },
+                { label: 'My Tasks', icon: <MdAddTask />, path: "/tasks" },
                 { label: 'Assigned Tasks', icon: <MdAddTask />, path: "/tasks/assigned" },
             ])
         }
@@ -65,7 +60,7 @@ const Sidebar = () => {
                             <MdAddTask size={30} />
                         </Icon>
                     </Box>
-                    <Text>Task Managment</Text>
+                    <Text>OptiFlow</Text>
                 </Flex>
 
                 <VStack align={"start"} px={[5]}>

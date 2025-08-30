@@ -25,13 +25,13 @@ const authenticateUser = async (req, res) => {
      
 
     const accessToken = jwt.sign(
-      { userId: user._id, name: user.name, email: user.email },
+      { userId: user._id, name: user.name, email: user.email,role : user.role },
       SECRET_KEY,
       { expiresIn: "1D" }
     );
 
     const represhToken = jwt.sign(
-      { userId: user._id, name: user.name, email: user.email },
+      { userId: user._id, name: user.name, email: user.email ,role : user.role},
       SECRET_KEY,
       { expiresIn: "1W" }
     );

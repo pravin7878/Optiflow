@@ -1,5 +1,8 @@
 const Todo = require("../models/Todo");
-const User = require("../models/user")
+const { sendMail } = require("../services/mailService");
+const { taskAssignedEmailTemplate } = require("../services/taskAssignedTemplate");
+const User = require("../models/user");
+const { roles } = require("../uttils/constents");
 
 // add a new task
 const addNewTask = async (req, res) => {
@@ -9,11 +12,13 @@ const addNewTask = async (req, res) => {
     status,
     priority,
     tags,
-    mentions
+    mentions,
+    deadline
   } = req.body;
 
   try {
-    const isAlreadyExist = await Todo.findOne({ title })
+    let isAlreadyExist = await Todo.findOne({ title, userId: req?.user?.userId })
+   
     if (isAlreadyExist) return res.status(400).json({ message: "can not add duplicate task!" })
 
     let mentionsArr = [];
@@ -33,7 +38,8 @@ const addNewTask = async (req, res) => {
       priority,
       tags: Array.isArray(tags) ? tags : (typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : []),
       userId: req.user?.userId,
-      mentions: mentionsArr
+      mentions: mentionsArr,
+      deadline
     });
     const newTaks = await todo.save();
 
@@ -46,6 +52,23 @@ const addNewTask = async (req, res) => {
       });
     })
 
+    // Send email notifications to mentioned users
+    for (const mansenUser of mentionsArr) {
+      const user = await User.findById(mansenUser);
+      if (user) {
+        const emailHtml = taskAssignedEmailTemplate({
+          taskTitle: todo.title,
+          deadline: todo.deadline,
+          taskUrl: `https://optiflow-24.vercel.app/tasks/${todo._id}`,
+        });
+
+        await sendMail({
+          to: user.email,
+          subject: "New Task Assigned",
+          html: emailHtml,
+        });
+      }
+    }
 
     res.status(201).json({ message: "task added success", newTaks });
   } catch (error) {
@@ -53,35 +76,6 @@ const addNewTask = async (req, res) => {
     res.status(500).json({ message: "internal server error" });
   }
 };
-
-// const getAssignedTask = async (req, res) => {
-//   const { status, priority, createdAt } = req.query
-
-//   // const filter = { mentions: req.user?.userId };
-//   const filter = {};
-
-//   if (status) {
-//     filter.status = status; // add status filter if provided
-//   }
-//   if (priority) {
-//     filter.priority = priority; // add priority filter if provided
-//   }
-//   if (createdAt) {
-//     filter.createdAt = createdAt; // add createdAt filter if provided
-//   }
-
-//   try {
-//     const allTask = await Todo.find(filter);
-//  const assignedTask = allTask.filter((task)=>task.mentions.includes(req.user?.userId))
-
-// console.log('assignedTask',assignedTask)
-
-//     res.json({ assignedTask });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// };
 
 
 const getAssignedTask = async (req, res) => {
@@ -202,4 +196,4 @@ const addNoteToTask = async (req, res) => {
   }
 };
 
-module.exports = { addNewTask, getTask, updateTask, removeTask, addNoteToTask,getAssignedTask };
+module.exports = { addNewTask, getTask, updateTask, removeTask, addNoteToTask, getAssignedTask };

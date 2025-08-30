@@ -23,7 +23,7 @@ const createMember = async (req, res) => {
       name: newUser.name,
       username: newUser.email,
       password,
-      loginUrl: "https://todo-app-inky-gamma.vercel.app/",
+      loginUrl: "https://optiflow-24.vercel.app/signin",
     });
 
 

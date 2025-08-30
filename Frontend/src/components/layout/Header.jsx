@@ -27,7 +27,7 @@ const Header = () => {
     const handleLogout = () => {
         dispatch(logout());
         localStorage.removeItem('user');
-        navigate('/singin');
+        navigate('/signin');
     }
 
     return (
