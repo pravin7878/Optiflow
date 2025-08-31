@@ -18,13 +18,16 @@ const userSlice = createSlice({
       localStorage.setItem("user", null);
 
     },
+    clearErrors : (state)=>{
+      state.error = null
+    }
   },
   extraReducers: (builder) => {
     builder
       // Handle login
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
-        // state.error = null;
+        state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
@@ -89,5 +92,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { logout } = userSlice.actions;
+export const { logout ,clearErrors} = userSlice.actions;
 export default userSlice.reducer;

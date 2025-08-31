@@ -17,12 +17,14 @@ import { useNavigate } from 'react-router-dom';
 import ProfileButton from '../custom/ProfileButton';
 import PresenceCard from '../ui/Presence';
 import UserInfoCard from '../custom/UserInfoCard';
+import { useLocation } from 'react-router-dom';
 
 const Header = () => {
     const [isSerchActive, setIsSerchActive] = useState(false)
     const { user } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogout = () => {
         dispatch(logout());
@@ -40,12 +42,8 @@ const Header = () => {
             zIndex={1}
         >
             {/* sm screen only */}
-            <HStack
-                hideFrom={"md"}
-            >
-                <Box
-
-                >
+            <HStack hideFrom={"md"}>
+                <Box>
                     <SideBarDrawer>
                         <Sidebar />
                     </SideBarDrawer>
@@ -57,26 +55,30 @@ const Header = () => {
                 </Box>
             </HStack>
 
-            <Box
-                w={"60%"}
-                display={{ base: isSerchActive ? "block" : "none", md: "block" }}
-            >
-                <InputGroup flex="1" startElement={<LuSearch />} >
-                    <Input placeholder="Search task..." />
-                </InputGroup>
-            </Box>
+            {/* searchbar */}
+            {location.pathname !== "/" ?
+                (<Box
+                    w={"60%"}
+                    display={{ base: isSerchActive ? "block" : "none", md: "block" }}
+                >
+                    <InputGroup flex="1" startElement={<LuSearch />} >
+                        <Input placeholder="Search task..." />
+                    </InputGroup>
+                </Box>) : <Box></Box>
+            }
 
             <HStack>
-                <IconButton
-                    variant={"ghost"}
-                    size={["xs", "sm", "md"]}
-                    hideFrom={"md"}
-                    aria-label="Search database"
-                    onClick={() => setIsSerchActive(!isSerchActive)}
-                >
-                    {isSerchActive ? <CgClose /> : <LuSearch />}
-                </IconButton>
-
+                {location.pathname !== "/" &&
+                    <IconButton
+                        variant={"ghost"}
+                        size={["xs", "sm", "md"]}
+                        hideFrom={"md"}
+                        aria-label="Search database"
+                        onClick={() => setIsSerchActive(!isSerchActive)}
+                    >
+                        {isSerchActive ? <CgClose /> : <LuSearch />}
+                    </IconButton>
+                }
                 <ColorModeButton
                     hidden={isSerchActive}
                 />
@@ -91,10 +93,10 @@ const Header = () => {
                 </IconButton>
 
                 {user ? (<HStack gap={3}>
-                    
+
 
                     <PresenceCard clickItem={<ProfileButton />} >
-                       <UserInfoCard handleLogout={handleLogout} isSerchActive={isSerchActive}/>
+                        <UserInfoCard handleLogout={handleLogout} isSerchActive={isSerchActive} />
                     </PresenceCard>
                 </HStack>
                 ) : (

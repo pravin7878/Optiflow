@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../api';
-import axios from 'axios';
 
 const BACKEND_URI = import.meta.env.VITE_BACKEND_URI;
 

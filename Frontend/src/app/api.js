@@ -20,6 +20,19 @@ api.interceptors.response.use(
         type: "error",
         placement: "top-end",
       });
+    } else if (!error.response) {
+      // Network error (backend not running)
+      const isDev = import.meta.env.MODE === "development";
+      toaster.create({
+        title: "Server Unavailable",
+        description: isDev
+          ? "Backend is not reachable. Please start your backend server and try again."
+          : "Something went wrong. Please try again later.",
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+        placement: "top-end",
+      });
     }
     return Promise.reject(error);
   }

@@ -1,3 +1,4 @@
+import { clearErrors } from "@/app/slices/userSlice";
 import { loginUser } from "../app/actions/user";
 import {
   Button,
@@ -19,7 +20,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, loading, error } = useSelector((state) => state.user);
-
+const [requestedUrl, setrequestedUrl] = useState(localStorage.getItem("requestedUrl") || "/")
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -29,6 +30,8 @@ const Login = () => {
   const handelChange = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
+    setValidationError("");
+    dispatch(clearErrors())
   };
 
   const handelSubmit = async (e) => {
@@ -36,11 +39,7 @@ const Login = () => {
 
     // Frontend validation
     if (!data.email || !data.password) {
-      setValidationError("All fields are required.");
-      return;
-    }
-    if (data.password.length < 6) {
-      setValidationError("Password must be at least 6 characters.");
+      setValidationError("email and password required.");
       return;
     }
 
@@ -52,7 +51,8 @@ const Login = () => {
         email: "",
         password: "",
       });
-      navigate("/");
+    setValidationError("");
+      navigate(requestedUrl || "/");
     }
   };
 
