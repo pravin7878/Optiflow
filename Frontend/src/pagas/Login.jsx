@@ -2,57 +2,68 @@ import { clearErrors } from "@/app/slices/userSlice";
 import { loginUser } from "../app/actions/user";
 import {
   Button,
-  Center,
   Field,
   Fieldset,
-  HStack,
   Input,
   Stack,
   Text,
   Box,
   Flex,
+  VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, loading, error } = useSelector((state) => state.user);
-const [requestedUrl, setrequestedUrl] = useState(localStorage.getItem("requestedUrl") || "/")
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
-  const [validationError, setValidationError] = useState("");
 
-  const handelChange = (e) => {
+  const [requestedUrl] = useState(localStorage.getItem("requestedUrl") || "/");
+  const [data, setData] = useState({ email: "", password: "" });
+  const [validationError, setValidationError] = useState("");
+  const [activeButton, setActiveButton] = useState(null);
+
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
     setValidationError("");
-    dispatch(clearErrors())
+    dispatch(clearErrors());
   };
 
-  const handelSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Frontend validation
     if (!data.email || !data.password) {
-      setValidationError("email and password required.");
+      setValidationError("Email and password required.");
       return;
     }
 
     setValidationError("");
+    setActiveButton("normal");
+    const result = await dispatch(loginUser(data));
+    setActiveButton("normal");
 
-    const result = await dispatch(loginUser(data)); // Dispatch login action
     if (result.payload?.accessToken) {
-      setData({
-        email: "",
-        password: "",
-      });
-    setValidationError("");
+      setData({ email: "", password: "" });
       navigate(requestedUrl || "/");
+    }
+  };
+
+  // 👇 Guest login handlers
+  const handleGuestLogin = async (role) => {
+    setActiveButton(role);
+    const guestCredentials =
+      role === "admin"
+        ? { email: "admin@gmail.com", password: "admin@123" }
+        : { email: "pravin@gmail.com", password: "123456" };
+
+    const result = await dispatch(loginUser(guestCredentials));
+    setActiveButton(null);
+    if (result.payload?.accessToken) {
+      navigate("/");
     }
   };
 
@@ -84,16 +95,19 @@ const [requestedUrl, setrequestedUrl] = useState(localStorage.getItem("requested
           </Stack>
 
           {error && <Text fontSize="sm" color="red.500">{error?.message}</Text>}
-          {validationError && <Text fontSize="sm" color="red.500">{validationError}</Text>}
+          {validationError && (
+            <Text fontSize="sm" color="red.500">{validationError}</Text>
+          )}
           {user && <Text fontSize="sm">Welcome, {user.name}!</Text>}
 
-          <Fieldset.Root size="lg" as="form" >
+          {/* Normal Login Form */}
+          <Fieldset.Root size="lg" as="form">
             <Fieldset.Content>
               <Field.Root>
                 <Field.Label>Email address</Field.Label>
                 <Input
                   value={data.email}
-                  onChange={handelChange}
+                  onChange={handleChange}
                   name="email"
                   type="email"
                   placeholder="Enter your email"
@@ -104,7 +118,7 @@ const [requestedUrl, setrequestedUrl] = useState(localStorage.getItem("requested
                 <Field.Label>Password</Field.Label>
                 <Input
                   value={data.password}
-                  onChange={handelChange}
+                  onChange={handleChange}
                   name="password"
                   type="password"
                   placeholder="Enter your password"
@@ -114,8 +128,8 @@ const [requestedUrl, setrequestedUrl] = useState(localStorage.getItem("requested
 
             <Button
               type="button"
-              onClick={handelSubmit}
-              loading={loading}
+              onClick={handleSubmit}
+              loading={loading && activeButton === "normal"}
               colorScheme="blue"
               w="full"
               mt={4}
@@ -123,21 +137,28 @@ const [requestedUrl, setrequestedUrl] = useState(localStorage.getItem("requested
               Sign In
             </Button>
           </Fieldset.Root>
-{/* 
-          <HStack justify="center">
-            <Text fontSize="sm" color="gray.500">
-              Don’t have an account?
-            </Text>
-            <Text
-              as={Link}
-              to="/signup"
-              fontSize="sm"
-              color="blue.500"
-              _hover={{ textDecoration: "underline" }}
+
+          {/* Guest Login Buttons */}
+          <VStack spacing={3} mt={6}>
+            <Button
+              type="button"
+              loading={loading && activeButton === "user"}
+              colorScheme="green"
+              w="full"
+              onClick={() => handleGuestLogin("user")}
             >
-              Sign Up
-            </Text>
-          </HStack> */}
+              Login as Guest User
+            </Button>
+            <Button
+              type="button"
+              loading={loading && activeButton === "admin"}
+              colorScheme="purple"
+              w="full"
+              onClick={() => handleGuestLogin("admin")}
+            >
+              Login as Guest Admin
+            </Button>
+          </VStack>
         </Stack>
       </Box>
     </Flex>

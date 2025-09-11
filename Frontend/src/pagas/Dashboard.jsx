@@ -8,6 +8,7 @@ import Settings from "../components/custom/Settings";
 import { useDispatch } from "react-redux";
 import { fetchAllUsers } from "../app/actions/user";
 import { fetchTasks } from "@/app/actions/task";
+import RecentActivity from "@/components/custom/RecentActivity";
 
 const Dashboard = () => {
 const dispatch = useDispatch()
@@ -27,7 +28,9 @@ const dispatch = useDispatch()
         </Box>
         <VStack w={"full"} align={"start"} px={3}>
           <Team />
-          <Settings />
+          {/* <Settings /> */}
+
+          <RecentActivity/>
         </VStack>
       </Flex>
     </Flex>

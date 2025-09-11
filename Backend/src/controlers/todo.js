@@ -3,6 +3,7 @@ const { sendMail } = require("../services/mailService");
 const { taskAssignedEmailTemplate } = require("../services/taskAssignedTemplate");
 const User = require("../models/user");
 const { roles } = require("../uttils/constents");
+const Activity = require("../models/activityModel");
 
 // add a new task
 const addNewTask = async (req, res) => {
@@ -18,7 +19,7 @@ const addNewTask = async (req, res) => {
 
   try {
     let isAlreadyExist = await Todo.findOne({ title, userId: req?.user?.userId })
-   
+
     if (isAlreadyExist) return res.status(400).json({ message: "can not add duplicate task!" })
 
     let mentionsArr = [];
@@ -42,6 +43,13 @@ const addNewTask = async (req, res) => {
       deadline
     });
     const newTaks = await todo.save();
+
+    await Activity.create({
+      userId: req.user.userId,
+      type: "task_created",
+      targetId: newTaks._id,
+      message: `Task "${newTaks.title}" created`
+    });
 
     const io = req.app.get("socketio");
 
@@ -142,6 +150,14 @@ const updateTask = async (req, res) => {
       { new: true }
     );
     if (!task) return res.status(404).json({ message: "Task Not found" });
+
+    await Activity.create({
+      userId: req.user.userId,
+      type: "task_updated",
+      targetId: taskId,
+      message: `Task "${task.title}" updated`
+    });
+
     res
       .status(201)
       .json({ message: "task updated success", updatedTask: task });

@@ -9,7 +9,7 @@ const connectToDB = require("./src/config/db");
 const userRouter = require("./src/routes/user.route");
 const todoRouter = require("./src/routes/todo.routes");
 const teamRouter = require("./src/routes/team")
-
+const activityRouter = require("./src/routes/activity")
 
 const app = express()
 const httpServer = createServer(app)
@@ -33,6 +33,7 @@ app.use(express.json())
 app.use("/user" , userRouter)
 app.use("/tasks" , todoRouter)
 app.use("/team" , teamRouter)
+app.use("/activity" , activityRouter)
 
 
 // Register socket events

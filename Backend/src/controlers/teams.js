@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt")
 const { sendMail } = require("../services/mailService");
 const { welcomeEmailTemplate } = require("../services/welcomeTemplate");
-
+const Activity = require("../models/activityModel");
 
 const createMember = async (req, res) => {
   const { email, password } = req.body;
@@ -35,7 +35,12 @@ const createMember = async (req, res) => {
       html: emailHtml,
     });
 
-
+    await Activity.create({
+      userId: req.user?.userId, // or admin's ID
+      type: "employee_created",
+      targetId: newUser._id,
+      message: `Employee "${newUser.name}" created`
+    });
 
     res.status(201).json({ message: "New Member Added Success", NewMember: newUser });
   } catch (error) {
